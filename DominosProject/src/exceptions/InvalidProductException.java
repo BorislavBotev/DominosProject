@@ -1,34 +1,34 @@
-package userSystem;
+package exceptions;
 
-public class InvalidPriceException extends Exception {
+public class InvalidProductException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public InvalidPriceException() {
+	public InvalidProductException() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public InvalidPriceException(String message, Throwable cause, boolean enableSuppression,
+	public InvalidProductException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
 
-	public InvalidPriceException(String message, Throwable cause) {
+	public InvalidProductException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public InvalidPriceException(String message) {
+	public InvalidProductException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public InvalidPriceException(Throwable cause) {
+	public InvalidProductException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}

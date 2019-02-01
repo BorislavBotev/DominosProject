@@ -33,6 +33,8 @@ public abstract class Person {
 		} else throw new InvalidPhoneNumberException("Invalid phone number!");
 	}
 
+	
+
 	private boolean isValidPhoneNumber(String phoneNumber) {
 		return phoneNumber!=null && phoneNumber.trim().length()==PHONE_NUMBER_LENGTH && phoneNumber.startsWith(PHONE_NUMBER_START_PREFIX);
 	}
@@ -40,5 +42,7 @@ public abstract class Person {
 	private boolean isValidName(String name) {
 		return name!=null && name.trim().length()>0;
 	}
-	
+	public String getName() {
+		return name;
+	}
 }
