@@ -10,7 +10,7 @@ import exceptions.WrongPasswordException;
 public class UserStorage {
 	private static final int MIN_PASSWORD_LENGHT = 6;
 	private static int usersCount = 0;
-	private static Map<String, User> users;
+	private static Map<String, User> users=new HashMap<String,User>();
 	
 	public static void addNewUser(String name, String phoneNumber, String email, String password) throws EmailAlreadyExistException {
 		if(UserStorage.usersCount==0) {
