@@ -2,18 +2,23 @@ package userSystem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalTime;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-
 import exceptions.EmailAlreadyExistException;
 import exceptions.InvalidChoiceException;
 import exceptions.InvalidEMailException;
 import exceptions.InvalidProductException;
+import exceptions.InvalidAddress;
+import exceptions.InvalidEMailException;
+import exceptions.InvalidTimeException;
 import exceptions.InvalidUserException;
 import exceptions.WrongPasswordException;
 import userSystem.Product.ProductCategory;
 
 public class Menu{
+	private static final int STARTING_INDEX = 1;
 	static Scanner sc = new Scanner(System.in);
 
 	
@@ -107,7 +112,7 @@ public class Menu{
 			throw new InvalidChoiceException("Invalid Choice!");
 		}		
 	}
-
+	
 
 	private static Order showProductsFromCategory(Order order, ProductCategory category) {
 		Set<Product> menu = ProductStorage.getMenu().get(category);
@@ -137,7 +142,56 @@ public class Menu{
 		//
 		return order;
 	}
-
+	
+	
+	private static void choseDeliveryTime(Order order) {
+		int hours,minutes;
+		do {
+		System.out.println("Please insert hours and minutes");
+			 hours=sc.nextInt();
+			 minutes=sc.nextInt();
+		}
+		while(hours<0 || hours>23 || minutes<0 || minutes>60);	
+		try {
+			order.insertDate(LocalTime.of(hours, minutes));
+		} catch (InvalidTimeException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
+	private static void chooseAddress(User user, Order order) throws InvalidAddress {
+		System.out.println("1-Add an address"+"\n"+"2-Choose an Adress");
+		int command=sc.nextInt();
+		switch (command) {
+		case 1:
+			Menu.insertAddress(user);
+		case 2:
+			if(user.getAddresses().size()==0) {
+				System.out.println("You got no addresses added");
+				Menu.insertAddress(user);
+			}
+			int displayIndex=STARTING_INDEX;
+			int chooseIndex;
+			do {
+				System.out.println("Please choose an address");
+				for(String s:user.getAddresses()) {
+					System.out.println("Address "+displayIndex++ +"- "+s);
+				}
+				chooseIndex=sc.nextInt();
+			}while(chooseIndex<1 || chooseIndex>user.getAddresses().size());
+			order.setAddress(user.getAddresses().get(chooseIndex));
+			break;
+		default:
+			break;
+		}
+	}
+	
+	
+	private static void insertAddress(User user) throws InvalidAddress {
+		System.out.println("Please insert an address");
+		user.addAddress(sc.nextLine());
+	}
 
 	
 	
