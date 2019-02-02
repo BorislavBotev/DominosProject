@@ -22,6 +22,7 @@ public class UserStorage {
 				User newUser = new User(name, phoneNumber, email, password);
 				UserStorage.users.put(email, newUser);
 				UserStorage.usersCount++;
+				System.out.println("You registered successfully!\n");
 			}
 		} else {
 			throw new EmailAlreadyExistException("This e-mail is already taken!");
@@ -32,6 +33,7 @@ public class UserStorage {
 		if(UserStorage.users.containsKey(eMail)) {
 			User user = UserStorage.users.get(eMail);
 			if(password.equals(user.getPassword())) {
+				System.out.println("You logged in successfully!\n");
 				return user;
 			} else {
 				throw new WrongPasswordException("Wrong Password!");

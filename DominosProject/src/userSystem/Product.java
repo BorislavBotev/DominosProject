@@ -39,4 +39,11 @@ public abstract class Product {
 	public ProductCategory getProductCategory() {
 		return productCategory;
 	}
+
+	@Override
+	public String toString() {
+		return "Category: " + this.productCategory + " - " + this.name + " - " + this.price;
+	}
+	
+	
 }
