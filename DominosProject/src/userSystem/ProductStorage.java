@@ -6,9 +6,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class ProductStorage {
-	private static Map<Product.ProductCategory,Set<Product>> menu=new HashMap<>();
+	private static Map<Product.ProductCategory,Set<Product>> menu=new TreeMap<>();
 	
 	public static void listMenu() {
 		for(Entry<Product.ProductCategory,Set<Product>> entry:menu.entrySet()) {
