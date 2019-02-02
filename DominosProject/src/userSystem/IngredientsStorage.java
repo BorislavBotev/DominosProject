@@ -1,27 +1,31 @@
 package userSystem;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+
+import exceptions.InvalidIngredientException;
 
 public class IngredientsStorage {
-	private static Map<Ingredient.IngredientsCategory,Set<Ingredient>> storage=new HashMap<>();
-//	public IngredientsStorage() {
-//		storage.put(Ingredient.IngredientsCategory.VEGETABLE, new HashSet<Ingredient>());
-//		storage.put(Ingredient.IngredientsCategory.MEAT, new HashSet<Ingredient>());
-//		storage.put(Ingredient.IngredientsCategory.SAUCE, new HashSet<Ingredient>());
-//		storage.put(Ingredient.IngredientsCategory.CHEESE, new HashSet<Ingredient>());
-//	}
+	private static Map<Ingredient.IngredientsCategory,Set<Ingredient>> storage=new TreeMap<>();
 	
-	public void addIngredient(Ingredient ingredient) {
+	public static void addIngredient(Ingredient ingredient) throws InvalidIngredientException {
 		if(ingredient!=null) {
-			this.storage.get(ingredient.getCategory()).add(ingredient);
+			Set<Ingredient> ingredients = new HashSet<Ingredient>();
+			if(storage.containsKey(ingredient.getCategory())) {
+				ingredients = storage.get(ingredient.getCategory());
+			} 
+			ingredients.add(ingredient);
+			storage.put(ingredient.getCategory(), ingredients);
+		} else {
+			throw new InvalidIngredientException("Invalid Ingredient!");
 		}
 	}
-	public void removeIngredient(Ingredient ingredient) {
-		if(ingredient!=null) {
-			this.storage.get(ingredient).remove(ingredient);
+	
+	public static void removeIngredient(Ingredient ingredient) {
+		if(ingredient!=null && storage.get(ingredient.getCategory()).contains(ingredient)) {
+			storage.remove(ingredient.getCategory(), ingredient);
 		}
 	}
 	

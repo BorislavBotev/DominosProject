@@ -12,15 +12,19 @@ public class ProductStorage {
 	private static Map<Product.ProductCategory,Set<Product>> menu=new TreeMap<>();
 	
 	public static void listMenu() {
-		for(Entry<Product.ProductCategory,Set<Product>> entry:menu.entrySet()) {
-			System.out.println(entry.getKey());
-			for(Product p:entry.getValue()) {
-				System.out.println(p);
+		if(menu.size()>0) {
+			for(Entry<Product.ProductCategory,Set<Product>> entry:menu.entrySet()) {
+				System.out.println(entry.getKey());
+				for(Product p:entry.getValue()) {
+					System.out.println(p);
+				}
 			}
+		} else {
+			System.out.println("Menu is empty!");
 		}
 	}
 	
-	public void addProduct(Product product) {
+	public static void addProduct(Product product) {
 		if(product!=null) {
 			if(!menu.containsKey(product.getProductCategory())) {
 				menu.put(product.getProductCategory(), new HashSet<Product>());
