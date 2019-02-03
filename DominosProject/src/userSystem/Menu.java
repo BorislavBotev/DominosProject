@@ -9,12 +9,15 @@ import java.util.Set;
 import exceptions.EmailAlreadyExistException;
 import exceptions.InvalidChoiceException;
 import exceptions.InvalidEMailException;
+import exceptions.InvalidPriceException;
 import exceptions.InvalidProductException;
 import exceptions.InvalidAddress;
 import exceptions.InvalidEMailException;
 import exceptions.InvalidTimeException;
 import exceptions.InvalidUserException;
 import exceptions.WrongPasswordException;
+import userSystem.Pizza.Dough;
+import userSystem.Pizza.Size;
 import userSystem.Product.ProductCategory;
 
 public class Menu{
@@ -186,11 +189,65 @@ public class Menu{
 			break;
 		}
 	}
-	
-	
+
 	private static void insertAddress(User user) throws InvalidAddress {
 		System.out.println("Please insert an address");
 		user.addAddress(sc.nextLine());
+	}
+	
+	private static Pizza createYourOwnPizza(User user) throws InvalidUserException {
+		if(user==null) {
+			throw new InvalidUserException();
+		}
+		Pizza pizza = null;
+		try {
+			pizza =new Pizza("Your pizza");
+		} catch (InvalidProductException e) {
+			e.printStackTrace();
+		} catch (InvalidPriceException e) {
+			e.printStackTrace();
+		}
+		int index=0;
+		do {
+			index=1;
+			System.out.println("Please choose your dough");
+			for(Pizza.Dough d:Pizza.Dough.values()) {
+				System.out.println(index++ +"- "+d);
+			}
+			index=sc.nextInt();
+		}while(index<1 || index>=Pizza.Dough.values().length);
+		pizza.setDough(Dough.values()[index]);
+		do {
+			System.out.println("Please choose the size of the pizza");
+			index=1;
+			for(Pizza.Size s:Pizza.Size.values()) {
+				System.out.println(index++ +"- "+s);
+			}
+			pizza.setSize(Size.values()[index]);
+		}while(index<1 || index>=Pizza.Size.values().length);
+		pizza=Menu.chooseIngredients(pizza);
+		return pizza;
+		
+		
+	}
+	public static Pizza chooseIngredients(Pizza pizza) {
+		int index=-1;
+		while(index!=0) {
+			System.out.println("Choose your ingredients please ");
+			List<Ingredient> ingredients=IngredientsStorage.listAllIngredientsWithIndexes();
+			index=sc.nextInt();
+			if(index<0 || index>ingredients.size()) {
+				System.out.println("Invalid index");
+				continue;
+			}
+			Ingredient i=ingredients.get(index-1);
+			pizza.addIngredient(i);
+			System.out.println("Successfully added "+i);
+			System.out.println("Press 0 if u have finished with your ingredients");
+			index=sc.nextInt();	
+		}
+		return pizza;
+		
 	}
 
 	
