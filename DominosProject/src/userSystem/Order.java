@@ -1,8 +1,8 @@
 package userSystem;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,7 +31,8 @@ public class Order {
 		}
 		this.client=client;
 		this.time=LocalTime.now().plusMinutes(APPROXIMATE_WAITING_TIME);
-		address="";
+		this.address="";
+		this.products = new HashMap<Product, Integer>();
 	}
 
 	public void addProduct(Product product) throws InvalidProductException {
@@ -78,6 +79,7 @@ public class Order {
 					int count=this.products.get(productToRemove);
 					this.products.put(productToRemove, --count);
 				}
+				this.price -= productToRemove.getPrice(); 
 				System.out.println(productToRemove + " was successfully removed!");
 			}
 		} else throw new InvalidChoiceException("Invalid Choice!");

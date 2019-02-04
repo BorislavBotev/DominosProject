@@ -25,21 +25,25 @@ public abstract class Product {
 		this.productCategory=productCategory;
 		this.photo="";
 	}
+	
 	public void setPrice(double price) throws InvalidPriceException {
 		if(price <0) {
 			throw new InvalidPriceException();
 		}
 		this.price = price;
 	}
+	
 	public void increasePrice(double price) {
 		if(price>0) {
 			this.price+=price;
 		}
 	}
+	
 	public ProductCategory getProductCategory() {
 		return productCategory;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "Category: " + this.productCategory + " - " + this.name + " - " + this.price;

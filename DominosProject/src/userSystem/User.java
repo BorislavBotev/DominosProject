@@ -15,7 +15,6 @@ public class User extends Person implements IUser{
 	private String password;
 	private Set<Order> pastOrders;
 	private List<String> addresses;
-
 	//discountTickets..
 	
 	protected User(String name, String phoneNumber, String email, String password) {
@@ -27,9 +26,10 @@ public class User extends Person implements IUser{
 	}
 
 	@Override
-	public void makeOrder() {
-//		new Order(this);
+	public void makeOrder(Order order) {
+		this.pastOrders.add(order);
 	}
+	
 	public void addAddress(String address) throws InvalidAddress {
 		if(address==null || address.trim().length()==0) {
 			throw new InvalidAddress();

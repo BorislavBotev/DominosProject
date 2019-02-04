@@ -18,11 +18,16 @@ import exceptions.InvalidUserException;
 import exceptions.WrongPasswordException;
 import userSystem.Pizza.Dough;
 import userSystem.Pizza.Size;
+import userSystem.Pizza.HalfHalfPizza;
 import userSystem.Product.ProductCategory;
 
 public class Menu{
+	private static final int MAX_MINUTES = 60;
+	private static final int MIN_MINUTES = 0;
+	private static final int MAX_HOURS = 23;
+	private static final int MIN_HOURS = 0;
 	private static final int STARTING_INDEX = 1;
-	static Scanner sc = new Scanner(System.in);
+	private static Scanner sc = new Scanner(System.in);
 
 	
 	public static void showMenu() {
@@ -87,14 +92,20 @@ public class Menu{
 						break;
 					}
 					case 3:{
-						//finalize
+						chooseAddress(user, order);
+						chooseDeliveryTime(order);
+						user.makeOrder(order);
+						order.setFinalized(true);
 						break;
 					}
 					default:
 						break;
 					}
 				}
+				
 			} catch (InvalidChoiceException e) {
+				e.printStackTrace();
+			} catch (InvalidAddress e) {
 				e.printStackTrace();
 			}
 		} else throw new InvalidUserException("Invalid User!");
@@ -117,7 +128,7 @@ public class Menu{
 	}
 	
 
-	private static Order showProductsFromCategory(Order order, ProductCategory category) {
+	private static void showProductsFromCategory(Order order, ProductCategory category) {
 		Set<Product> menu = ProductStorage.getMenu().get(category);
 		
 		if(category.equals(Product.ProductCategory.PIZZA)) {
@@ -127,7 +138,7 @@ public class Menu{
 			for(short index=0; index < products.size(); index++) {
 				System.out.println((index+1) + " - " + products.get(index));
 				short choice = (short) (sc.nextShort() - 1) ;
-				if(choice>=0 && choice < products.size()) {
+				if(isValidChoice(products, choice)) {
 					Product choosenProduct = products.get(choice);
 					try {
 						order.addProduct(choosenProduct);
@@ -137,24 +148,130 @@ public class Menu{
 				}
 			}
 		}
-		return order;
 	}
 
 
-	private static Order showPizzaOrderMenu(Order order) {
-		//
-		return order;
+	private static void showPizzaOrderMenu(Order order) {
+		System.out.println("1 - Choose from menu \n2 - Half/Half \n3 - Make your own");
+		byte choice = (byte) sc.nextInt();
+		Pizza pizza = null;
+		try {
+			switch (choice) {
+			case 1:{
+				pizza = orderPizzaFromMenu();
+				break;
+			}
+			case 2:{
+				pizza = orderHalfHalfPizza();
+				break;
+			}
+			case 3:{
+				pizza = orderPersonalizedPizza();
+				break;
+			}	
+			default:
+				throw new InvalidChoiceException("Invalid command!");
+			}	
+		} catch (InvalidChoiceException e) {
+			e.printStackTrace();
+		}
+		
+		
+		if(pizza!=null) {
+			try {
+				setUpAPizza(pizza);
+				order.addProduct(pizza);
+			} catch (InvalidChoiceException | InvalidProductException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+
+	private static Pizza orderPizzaFromMenu() throws InvalidChoiceException {
+		Set<Product> pMenu= ProductStorage.getMenu().get(ProductCategory.PIZZA);
+		List<Product> pizzaMenu = new ArrayList<Product>(pMenu);
+		for(short index=0; index<pizzaMenu.size(); index++) {
+			System.out.println((index+1) + " - " + pizzaMenu.get(index));
+		}
+		short choice = (short) (sc.nextShort() - 1);
+		if(isValidChoice(pizzaMenu, choice)) {
+			Pizza pizza = (Pizza) pizzaMenu.get(choice);
+			return pizza;
+		}
+		throw new InvalidChoiceException("Invalid command!");
+	}
+
+	
+	private static Pizza orderHalfHalfPizza() throws InvalidChoiceException {
+		try {
+			Pizza.HalfHalfPizza pizza = (HalfHalfPizza) orderPizzaFromMenu();
+			pizza.chooseSecondHalfPizza((HalfHalfPizza) orderPizzaFromMenu());
+			return pizza;
+		} catch (InvalidChoiceException | InvalidProductException e) {
+			e.printStackTrace();
+		}
+		throw new InvalidChoiceException("Invalid command!");
 	}
 	
 	
-	private static void choseDeliveryTime(Order order) {
+	private static Pizza orderPersonalizedPizza() {
+		
+		return null;
+	}
+	
+	
+	private static void setUpAPizza(Pizza pizza) throws InvalidChoiceException {
+		System.out.println("Select Size: \n\t1-Medium \n\t2-Large \n\t3-Jumbo");
+		byte choice = sc.nextByte();
+		switch (choice) {
+			case 1:{
+				pizza.chooseSize(Pizza.Size.MEDIUM);
+				break;
+			}
+			case 2:{
+				pizza.chooseSize(Pizza.Size.LARGE);
+				break;
+			}
+			case 3:{
+				pizza.chooseSize(Pizza.Size.DJUMBO);
+				break;
+			}	
+			default:
+				throw new InvalidChoiceException("Invalid command!");
+			}	
+		
+		
+		
+		System.out.println("Select Dough: \n\t1-Standart \n\t2-Italian \n\t3-Slighty");
+		choice = sc.nextByte();
+		switch (choice) {
+			case 1:{
+				pizza.chooseADough(Pizza.Dough.STANDART);
+				break;
+			}
+			case 2:{
+				pizza.chooseADough(Pizza.Dough.ITALIAN);
+				break;
+			}
+			case 3:{
+				pizza.chooseADough(Pizza.Dough.SLIGHTY);
+				break;
+			}	
+			default:
+				throw new InvalidChoiceException("Invalid command!");
+			}	
+	}
+	
+
+	private static void chooseDeliveryTime(Order order) {
 		int hours,minutes;
 		do {
 		System.out.println("Please insert hours and minutes");
 			 hours=sc.nextInt();
 			 minutes=sc.nextInt();
 		}
-		while(hours<0 || hours>23 || minutes<0 || minutes>60);	
+		while(hours<MIN_HOURS || hours>MAX_HOURS || minutes<MIN_MINUTES || minutes>MAX_MINUTES);	
 		try {
 			order.insertDate(LocalTime.of(hours, minutes));
 		} catch (InvalidTimeException e) {
@@ -195,13 +312,10 @@ public class Menu{
 		user.addAddress(sc.nextLine());
 	}
 	
-	private static Pizza createYourOwnPizza(User user) throws InvalidUserException {
-		if(user==null) {
-			throw new InvalidUserException();
-		}
+	private static Pizza createYourOwnPizza() throws InvalidUserException {
 		Pizza pizza = null;
 		try {
-			pizza =new Pizza("Your pizza");
+			pizza =new Pizza("Your pizza",0);
 		} catch (InvalidProductException e) {
 			e.printStackTrace();
 		} catch (InvalidPriceException e) {
@@ -286,5 +400,10 @@ public class Menu{
 		} catch (EmailAlreadyExistException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	private static boolean isValidChoice(List<Product> products, short choice) {
+		return choice>=0 && choice < products.size();
 	}
 }

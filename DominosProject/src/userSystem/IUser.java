@@ -1,5 +1,5 @@
 package userSystem;
 
 public interface IUser {
-	public void makeOrder();
+	public void makeOrder(Order order);
 }
