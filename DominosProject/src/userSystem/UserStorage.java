@@ -10,17 +10,29 @@ import exceptions.WrongPasswordException;
 public class UserStorage {
 	private static final int MIN_PASSWORD_LENGHT = 6;
 	private static int usersCount = 0;
-	private static Map<String, User> users=new HashMap<String,User>();
+	private Map<String, User> users;
+	private static UserStorage userStorage = null;
 	
-	public static void addNewUser(String name, String phoneNumber, String email, String password) throws EmailAlreadyExistException {
+	private UserStorage() {
+		this.users = new HashMap<String,User>();
+	}
+	
+	public static UserStorage getUserStorage() {
+		if(UserStorage.userStorage == null) {
+			userStorage = new UserStorage();
+		} 
+		return userStorage;
+	}
+	
+	public void addNewUser(String name, String phoneNumber, String email, String password) throws EmailAlreadyExistException {
 		if(UserStorage.usersCount==0) {
-			UserStorage.users = new HashMap<String, User>();
+			this.users = new HashMap<String, User>();
 		}
 		
-		if(!UserStorage.users.containsKey(email)) {
+		if(!this.users.containsKey(email)) {
 			if(isValidEmailAndPassword(email, password)) {
 				User newUser = new User(name, phoneNumber, email, password);
-				UserStorage.users.put(email, newUser);
+				this.users.put(email, newUser);
 				UserStorage.usersCount++;
 				System.out.println("You registered successfully!\n");
 			}
@@ -29,9 +41,9 @@ public class UserStorage {
 		}	
 	}
 	
-	public static User login(String eMail, String password) throws InvalidEMailException, WrongPasswordException {
-		if(UserStorage.users.containsKey(eMail)) {
-			User user = UserStorage.users.get(eMail);
+	public User login(String eMail, String password) throws InvalidEMailException, WrongPasswordException {
+		if(this.users.containsKey(eMail)) {
+			User user = this.users.get(eMail);
 			if(password.equals(user.getPassword())) {
 				System.out.println("You logged in successfully!\n");
 				return user;
@@ -41,9 +53,7 @@ public class UserStorage {
 		} else throw new InvalidEMailException("E-Mail was not found!");
 	}
 
-	private static boolean isValidEmailAndPassword(String email, String password) {
+	private boolean isValidEmailAndPassword(String email, String password) {
 		return email!=null && email.trim().length()>0 && password!=null && password.trim().length()>=MIN_PASSWORD_LENGHT;
 	}
-	
-	
 }

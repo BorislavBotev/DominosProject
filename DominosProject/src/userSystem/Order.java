@@ -48,12 +48,14 @@ public class Order {
 		}
 		price+=product.getPrice();
 	}
+	
 	public void insertDate(LocalTime time) throws InvalidTimeException {
 		if(time.isBefore(this.time) || time.isAfter(LocalTime.of(00, 00))){
 			throw new InvalidTimeException("Invalid time");
 		}
 		this.time=time;		
 	}
+	
 	public void addDeliveryGuy(DeliveryGuy deliveryGy) {
 		
 	}

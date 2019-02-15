@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import exceptions.InvalidAddress;
+import exceptions.InvalidOrderException;
 
 
 public class User extends Person implements IUser{
@@ -28,6 +29,11 @@ public class User extends Person implements IUser{
 	@Override
 	public void makeOrder(Order order) {
 		this.pastOrders.add(order);
+		try {
+			Restaurant.getRestaurant().receiveOrder(order);
+		} catch (InvalidOrderException e) {
+			e.getMessage();
+		}
 	}
 	
 	public void addAddress(String address) throws InvalidAddress {

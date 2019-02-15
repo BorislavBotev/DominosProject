@@ -9,11 +9,23 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class ProductStorage {
-	private static Map<Product.ProductCategory,Set<Product>> menu=new TreeMap<>();
+	private Map<Product.ProductCategory,Set<Product>> menu;
+	private static ProductStorage productStorage = null;
 	
-	public static void listMenu() {
-		if(menu.size()>0) {
-			for(Entry<Product.ProductCategory,Set<Product>> entry:menu.entrySet()) {
+	public ProductStorage() {
+		this.menu = new TreeMap<>();
+	}
+	
+	public static ProductStorage getProductStorage() {
+		if(ProductStorage.productStorage == null) {
+			productStorage = new ProductStorage();
+		} 
+		return productStorage;
+	}
+	
+	public void listMenu() {
+		if(this.menu.size()>0) {
+			for(Entry<Product.ProductCategory,Set<Product>> entry : this.menu.entrySet()) {
 				System.out.println(entry.getKey());
 				for(Product p:entry.getValue()) {
 					System.out.println(p);
@@ -24,18 +36,16 @@ public class ProductStorage {
 		}
 	}
 	
-	public static void addProduct(Product product) {
+	public void addProduct(Product product) {
 		if(product!=null) {
-			if(!menu.containsKey(product.getProductCategory())) {
-				menu.put(product.getProductCategory(), new HashSet<Product>());
+			if(!this.menu.containsKey(product.getProductCategory())) {
+				this.menu.put(product.getProductCategory(), new HashSet<Product>());
 			}
-			menu.get(product.getProductCategory()).add(product);
+			this.menu.get(product.getProductCategory()).add(product);
 		}
 	}
 
-	public static Map<Product.ProductCategory, Set<Product>> getMenu() {
-		return Collections.unmodifiableMap(menu);
+	public Map<Product.ProductCategory, Set<Product>> getMenu() {
+		return Collections.unmodifiableMap(this.menu);
 	}
-	
-	
 }

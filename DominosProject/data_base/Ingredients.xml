@@ -20,54 +20,45 @@
         <category>CHEESE</category>
         <price>2</price>
     </ingredient>
-        <ingredient>
         <name>Parmezan</name>
         <category>CHEESE</category>
         <price>1.5</price>
-    </ingredient>
-        <ingredient>
+    <ingredient>
         <name>Bekon</name>
         <category>MEAT</category>
         <price>3</price>
     </ingredient>
-    </ingredient>
-        <ingredient>
+    <ingredient>
         <name>Peperoni</name>
         <category>MEAT</category>
         <price>4</price>
     </ingredient>
-    </ingredient>
-        <ingredient>
+    <ingredient>
         <name>Pile</name>
         <category>MEAT</category>
         <price>2</price>
     </ingredient>
-    </ingredient>
-        <ingredient>
+    <ingredient>
         <name>Chorizo</name>
         <category>MEAT</category>
         <price>2.5</price>
     </ingredient>
-    </ingredient>
-        <ingredient>
+    <ingredient>
         <name>Shunka</name>
         <category>MEAT</category>
         <price>2.5</price>
     </ingredient>
-    </ingredient>
-        <ingredient>
+    <ingredient>
         <name>Chushki</name>
         <category>VEGETABLES</category>
         <price>1.5</price>
     </ingredient>
-    </ingredient>
-        <ingredient>
+    <ingredient>
         <name>Domati</name>
         <category>VEGETABLES</category>
         <price>1.5</price>
     </ingredient>
-    </ingredient>
-        <ingredient>
+    <ingredient>
         <name>Gubi</name>
         <category>VEGETABLES</category>
         <price>2</price>
