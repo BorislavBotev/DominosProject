@@ -15,12 +15,7 @@ import java.util.TreeMap;
 
 public class IngredientsStorage {
 	private static Map<Ingredient.IngredientsCategory,Set<Ingredient>> storage=new TreeMap<>();
-//	public IngredientsStorage() {
-//		storage.put(Ingredient.IngredientsCategory.VEGETABLE, new HashSet<Ingredient>());
-//		storage.put(Ingredient.IngredientsCategory.MEAT, new HashSet<Ingredient>());
-//		storage.put(Ingredient.IngredientsCategory.SAUCE, new HashSet<Ingredient>());
-//		storage.put(Ingredient.IngredientsCategory.CHEESE, new HashSet<Ingredient>());
-//	}
+
 	public static List<Ingredient> listAllIngredientsWithIndexes() {
 		List<Ingredient> ingredientsList=new ArrayList<>();
 		int count=1;
