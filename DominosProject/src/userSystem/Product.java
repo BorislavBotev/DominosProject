@@ -1,9 +1,12 @@
 package userSystem;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import exceptions.InvalidPriceException;
 import exceptions.InvalidProductException;
 
 public abstract class Product {
+	@XStreamAlias("productCategory")
 	public enum ProductCategory{
 		PIZZA,DESSERT,SAUCE,DRINK	
 	}

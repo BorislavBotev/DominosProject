@@ -1,9 +1,16 @@
 package userSystem;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.thoughtworks.xstream.XStream;
 
 import exceptions.EmailAlreadyExistException;
+import exceptions.InvalidAddress;
 import exceptions.InvalidEMailException;
 import exceptions.WrongPasswordException;
 
@@ -15,6 +22,7 @@ public class UserStorage {
 	
 	private UserStorage() {
 		this.users = new HashMap<String,User>();
+		this.downloadDataFromFile();
 	}
 	
 	public static UserStorage getUserStorage() {
@@ -35,10 +43,23 @@ public class UserStorage {
 				this.users.put(email, newUser);
 				UserStorage.usersCount++;
 				System.out.println("You registered successfully!\n");
+				
 			}
 		} else {
 			throw new EmailAlreadyExistException("This e-mail is already taken!");
 		}	
+	}
+	
+	private void downloadDataFromFile(){
+		XStream xs=new XStream();
+		xs.allowTypesByRegExp(new String[] { ".*" });
+		xs.alias("address", String.class);
+		xs.alias("Order", Order.class);
+		xs.processAnnotations( Users.class);
+		Users is=(Users)(xs.fromXML(new File("data_base"+File.separator+"Users.xml")));
+		for(User u:is.getUsers()) {
+			users.put(u.getName(), u);
+		}
 	}
 	
 	public User login(String eMail, String password) throws InvalidEMailException, WrongPasswordException {
@@ -56,4 +77,10 @@ public class UserStorage {
 	private boolean isValidEmailAndPassword(String email, String password) {
 		return email!=null && email.trim().length()>0 && password!=null && password.trim().length()>=MIN_PASSWORD_LENGHT;
 	}
+
+	public Map<String, User> getUsers() {
+		return users;
+	}
+	
+	
 }

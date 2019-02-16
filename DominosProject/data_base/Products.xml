@@ -112,12 +112,12 @@
 				</ingredient>
 				<ingredient>
 					<name>Domati</name>
-					<category>VEGETABLES</category>
+					<category>VEGETABLE</category>
 					<price>1.5</price>
 				</ingredient>
 				<ingredient>
 					<name>Chushki</name>
-					<category>VEGETABLES</category>
+					<category>VEGETABLE</category>
 					<price>1.5</price>
 				</ingredient>
 			</ingredients>
