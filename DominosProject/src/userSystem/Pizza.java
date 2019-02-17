@@ -34,12 +34,13 @@ public class Pizza extends Product {
 		private Pizza secondHalfPizza;
 		public HalfHalfPizza(String name, double price) throws InvalidProductException, InvalidPriceException {
 			super(name, price);	
-			this.setPrice();
+			
 		}
 		
 		public void chooseSecondHalfPizza(Pizza pizza) throws InvalidProductException {
 			if(pizza!=null) {
 				this.secondHalfPizza = pizza;
+				this.setPrice();
 			} else {
 				throw new InvalidProductException("Invalid Product");
 			}

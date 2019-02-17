@@ -16,60 +16,61 @@ import exceptions.InvalidPersonException;
 import exceptions.InvalidProductException;
 import exceptions.InvalidTimeException;
 import exceptions.InvalidUserException;
+
 @XStreamAlias("order")
 public class Order {
 	private static final int APPROXIMATE_WAITING_TIME = 60;
 	private static final int INITIAL_QUANTITY = 1;
 	private User client;
-	private Map<Product,Integer> products;
+	private Map<Product, Integer> products;
 	private float price;
 	private DeliveryGuy deliveryGuy;
 	private LocalTime time;
 	private boolean isFinalized;
 	private String address;
 
-
 	public Order(User client) throws InvalidUserException {
-		if(client==null) {
+		if (client == null) {
 			throw new InvalidUserException();
 		}
-		this.client=client;
-		this.time=LocalTime.now().plusMinutes(APPROXIMATE_WAITING_TIME);
-		this.address="";
+		this.client = client;
+		this.time = LocalTime.now().plusMinutes(APPROXIMATE_WAITING_TIME);
+		this.address = "";
 		this.products = new HashMap<Product, Integer>();
 	}
 
 	public void addProduct(Product product) throws InvalidProductException {
-		if(product==null) {
+		if (product == null) {
 			throw new InvalidProductException("Invalid product given");
 		}
-		if(!products.containsKey(product)) {
+		if (!products.containsKey(product)) {
 			products.put(product, INITIAL_QUANTITY);
+		} else {
+			int count = products.get(product);
+			products.put(product, ++count);
 		}
-		else {
-			int count=products.get(product);
-			products.put(product, ++count);	
-		}
-		price+=product.getPrice();
+		price += product.getPrice();
 	}
-	
+
 	public void insertDate(LocalTime time) throws InvalidTimeException {
-		if(time.isBefore(this.time) || time.isAfter(LocalTime.of(23, 59))){
-			throw new InvalidTimeException("Invalid time");
+		if (time.isBefore(this.time) || time.isAfter(LocalTime.of(23, 59))) {
+			this.time=LocalTime.now().plusMinutes(APPROXIMATE_WAITING_TIME);
+			throw new InvalidTimeException("Invalid time,set as default time");
 		}
-		this.time=time;		
+		this.time = time;
 	}
-	
+
 	public void addDeliveryGuy(DeliveryGuy deliveryGuy) throws InvalidPersonException {
-		if(deliveryGuy!=null) {
+		if (deliveryGuy != null) {
 			this.deliveryGuy = deliveryGuy;
-		} else throw new InvalidPersonException("Invalid Delivery guy!");
+		} else
+			throw new InvalidPersonException("Invalid Delivery guy!");
 	}
-	
+
 	public void calculatePrice() {
-		this.products.forEach((product, quantity) -> this.price += (product.getPrice()*quantity));
+		this.products.forEach((product, quantity) -> this.price += (product.getPrice() * quantity));
 	}
-	
+
 	public void removeProduct() throws InvalidChoiceException {
 		if(this.products.size()==0) {
 			System.out.println("The Bucket is empty!");
@@ -80,60 +81,61 @@ public class Order {
 			System.out.println((index+1) + " - " + products.get(index));
 		}
 		Scanner sc = new Scanner(System.in);
-		byte choice = (byte) (sc.nextByte()-1);
-		if(choice>=0 && choice<products.size()) {
-			Product productToRemove = products.get(choice);
-			if(this.products.containsKey(productToRemove)) {
-				if(this.products.get(productToRemove)==Order.INITIAL_QUANTITY) {
-					this.products.remove(productToRemove);
-				} else {
-					int count=this.products.get(productToRemove);
-					this.products.put(productToRemove, --count);
-				}
-				this.price -= productToRemove.getPrice(); 
-				System.out.println(productToRemove + " was successfully removed!");
-			}
-		} else throw new InvalidChoiceException("Invalid Choice!");
+		byte choice;
+		do {
+			System.out.println("Molq izberete");
+			choice = (byte) (sc.nextByte()-1);
+		}while(choice<0 || choice>=products.size());
+		Product productToRemove = products.get(choice);
+		if(this.products.containsKey(productToRemove)) {
+		if(this.products.get(productToRemove)==Order.INITIAL_QUANTITY) {
+			this.products.remove(productToRemove);
+		} else {
+			int count=this.products.get(productToRemove);
+			this.products.put(productToRemove, --count);
+		}
+		this.price -= productToRemove.getPrice(); 
+		System.out.println(productToRemove + " was successfully removed!");
+	    }
 	}
-	
-	
+
 	public void listOrder() {
 		System.out.println(this);
 	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder order=new StringBuilder();
-		order.append("Client "+client.getName()+"\n");
-		for(Entry<Product,Integer> entry:products.entrySet()) {
-			order.append(entry.getKey()+" X "+ entry.getValue()+"\n");
+		StringBuilder order = new StringBuilder();
+		order.append("Client " + client.getName() + "\n");
+		for (Entry<Product, Integer> entry : products.entrySet()) {
+			order.append(entry.getKey() + " X " + entry.getValue() + "\n");
 		}
 		order.append("Total price: " + this.price + "\n");
-		order.append("Your delivery guy "+deliveryGuy.getName()+"\n");
-		order.append("Your order is set for "+time+"\n");
+		order.append("Your delivery guy " + deliveryGuy.getName() + "\n");
+		order.append("Your order is set for " + time + "\n");
 		order.append("Address delivery " + this.address);
 		return order.toString();
-		
+
 	}
-	
+
 	public String seeTemporaryOrder() {
 		StringBuilder order = new StringBuilder();
 		int currentPrice = 0;
-		if(this.products.size()>0) {
-			for(Entry<Product,Integer> entry:products.entrySet()) {
-				order.append(entry.getKey()+" X "+ entry.getValue()+"\n");
-				currentPrice+=(entry.getKey().getPrice()*entry.getValue());
+		if (this.products.size() > 0) {
+			for (Entry<Product, Integer> entry : products.entrySet()) {
+				order.append(entry.getKey() + " X " + entry.getValue() + "\n");
+				currentPrice += (entry.getKey().getPrice() * entry.getValue());
 			}
 			order.append("Current Price: " + currentPrice);
 			return order.toString();
 		}
 		return "The bucket is empty!";
 	}
-	
+
 	public String getAddress() {
 		return address;
 	}
-	
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
@@ -145,9 +147,12 @@ public class Order {
 	public void setFinalized(boolean isFinalized) {
 		this.isFinalized = isFinalized;
 	}
-	
-	/*public String pastOrdersView() {
-		return this.time+"  "+this.price;
-	}*/
+	public boolean isEmpty() {
+		return products.isEmpty();
+	}
+
+	/*
+	 * public String pastOrdersView() { return this.time+"  "+this.price; }
+	 */
 
 }

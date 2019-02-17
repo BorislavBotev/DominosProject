@@ -61,7 +61,7 @@ public class Menu{
 	}
 	
 	
-	private void showLoginMenu() throws InvalidUserException {
+	private void showLoginMenu() throws InvalidUserException  {
 		System.out.println("1 - Login \n2 - Create New User");
 		int choice = sc.nextInt();
 		User user = null;
@@ -78,7 +78,9 @@ public class Menu{
 		default:
 			break;
 		}
-		
+		if(user==null) {
+			return;
+		}
 		this.orderMenu(user);
 	}
 	
@@ -105,11 +107,13 @@ public class Menu{
 						break;
 					}
 					case 4:{
-						chooseAddress(user, order);
-						chooseDeliveryTime(order);
-						order.calculatePrice();
-						order.setFinalized(true);
-						user.makeOrder(order);
+						if(!order.isEmpty()) {
+							chooseAddress(user, order);
+							chooseDeliveryTime(order);
+							order.calculatePrice();
+							order.setFinalized(true);
+							user.makeOrder(order);
+						}
 						break;
 					}
 					default:
@@ -128,17 +132,18 @@ public class Menu{
 	
 	private void showProductCategoriesMenu(Order order) throws InvalidChoiceException {
 		ProductCategory[] categories = Product.ProductCategory.values();
+		int choice=0;
+		do {
 		System.out.println("Please select category!\n");
 		for(byte index=0; index < categories.length; index++) {
 			System.out.println((index+1) + " - " + categories[index]);
 		}
-		int choice = sc.nextInt() - 1;
-		if(choice>=0 && choice<categories.length) {
-			ProductCategory category = categories[choice];			
-			showProductsFromCategory(order, category);
-		} else {
-			throw new InvalidChoiceException("Invalid Choice!");
-		}		
+		 choice = sc.nextInt() - 1;
+		}
+		while(choice<0 || choice>=categories.length) ;
+		ProductCategory category = categories[choice];			
+		showProductsFromCategory(order, category);
+			
 	}
 	
 
@@ -177,7 +182,11 @@ public class Menu{
 				break;
 			}
 			case 2:{
-				pizza = orderHalfHalfPizza();
+				try {
+					pizza = orderHalfHalfPizza();
+				} catch (InvalidPriceException e) {
+					e.printStackTrace();
+				}
 				break;
 			}
 			case 3:{
@@ -188,7 +197,7 @@ public class Menu{
 				throw new InvalidChoiceException("Invalid command!");
 			}	
 		} catch (InvalidChoiceException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 		
@@ -209,20 +218,23 @@ public class Menu{
 		for(short index=0; index<pizzaMenu.size(); index++) {
 			System.out.println((index+1) + " - " + pizzaMenu.get(index));
 		}
-		System.out.println("Choose pizza");
-		short choice = (short) (sc.nextShort() - 1);
-		if(isValidChoice(pizzaMenu, choice)) {
-			Pizza pizza = (Pizza) pizzaMenu.get(choice);
-			return pizza;
-		}
-		throw new InvalidChoiceException("Invalid command!");
+		
+		short choice=0;
+		do {
+			System.out.println("Choose pizza");
+			choice = (short) (sc.nextShort() - 1);
+		}while(!isValidChoice(pizzaMenu, choice));
+		
+		Pizza pizza = (Pizza) pizzaMenu.get(choice);
+		return pizza;
 	}
 
 	
-	private Pizza orderHalfHalfPizza() throws InvalidChoiceException {
+	private Pizza orderHalfHalfPizza() throws InvalidChoiceException, InvalidPriceException {
 		try {
-			Pizza.HalfHalfPizza pizza = (HalfHalfPizza) orderPizzaFromMenu();
-			pizza.chooseSecondHalfPizza((HalfHalfPizza) orderPizzaFromMenu());
+			Pizza p=orderPizzaFromMenu();
+			Pizza.HalfHalfPizza pizza =  new Pizza.HalfHalfPizza(p.getName(), p.getPrice());
+			pizza.chooseSecondHalfPizza( orderPizzaFromMenu());
 			return pizza;
 		} catch (InvalidChoiceException | InvalidProductException e) {
 			e.printStackTrace();
@@ -239,11 +251,10 @@ public class Menu{
 			for(Pizza.Size s:Pizza.Size.values()) {
 				System.out.println(index++ +"- "+s);
 			}
-
-
 			index = sc.nextInt();
-			pizza.setSize(Size.values()[index-1]);
-		} while(index<0 || index>=Pizza.Size.values().length);
+			
+		} while(index<0 || index>Pizza.Size.values().length);
+		pizza.setSize(Size.values()[index-1]);
 		
 		do {
 			index=1;
@@ -252,8 +263,9 @@ public class Menu{
 				System.out.println(index++ +"- "+d);
 			}
 			index=sc.nextInt();
-			pizza.setDough(Dough.values()[index-1]);
-		} while(index<0 || index>=Pizza.Dough.values().length);
+		} while(index<0 || index>Pizza.Dough.values().length);
+		pizza.setDough(Dough.values()[index-1]);
+
 		
 		return pizza;
 	}
@@ -277,8 +289,10 @@ public class Menu{
 	
 	
 	private void chooseAddress(User user, Order order) throws InvalidAddress {
+		int command=0;
+		do {
 		System.out.println("1-Add an address"+"\n"+"2-Choose an Adress");
-		int command=sc.nextInt();
+		command=sc.nextInt();
 		switch (command) {
 		case 1:
 			Menu.getMenu().insertAddress(user);
@@ -296,12 +310,13 @@ public class Menu{
 					System.out.println("Address "+displayIndex++ +"- "+s);
 				}
 				chooseIndex=sc.nextInt();
-			}while(chooseIndex<0 || chooseIndex>user.getAddresses().size());
+			}while(chooseIndex<0 || chooseIndex>=user.getAddresses().size());
 			order.setAddress(user.getAddresses().get(chooseIndex));
-			break;
+			return;
 		default:
 			break;
 		}
+		}while(command!=1 || command!=2);
 	}
 
 	private void insertAddress(User user) throws InvalidAddress {
@@ -337,7 +352,7 @@ public class Menu{
 			Ingredient i=ingredients.get(index-1);
 			pizza.addIngredient(i);
 			System.out.println("Successfully added "+i);
-			System.out.println("Press 0 if u have finished with your ingredients");
+			System.out.println("Press 0 if u have finished with your ingredients or any other number if u want more ingredients");
 			index=sc.nextInt();	
 		}
 		return pizza;
@@ -356,9 +371,10 @@ public class Menu{
 		 	User user = UserStorage.getUserStorage().login(eMail, password);
 		 	return user;
 		} catch (InvalidEMailException | WrongPasswordException e) {
-			e.printStackTrace();
+			System.out.println("Invalid input");
+			return null;
 		}
-		return null;
+		
 	}
 	
 	
@@ -375,7 +391,7 @@ public class Menu{
 		try {
 			UserStorage.getUserStorage().addNewUser(name, phoneNumber, eMail, password);
 		} catch (EmailAlreadyExistException | InvalidDataExcecption e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 	
