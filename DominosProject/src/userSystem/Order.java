@@ -106,7 +106,7 @@ public class Order {
 		StringBuilder order=new StringBuilder();
 		order.append("Client "+client.getName()+"\n");
 		for(Entry<Product,Integer> entry:products.entrySet()) {
-			order.append(entry.getValue()+" X "+ entry.getValue()+"\n");
+			order.append(entry.getKey()+" X "+ entry.getValue()+"\n");
 		}
 		order.append("Total price: " + this.price + "\n");
 		order.append("Your delivery guy "+deliveryGuy.getName()+"\n");
@@ -115,9 +115,25 @@ public class Order {
 		return order.toString();
 		
 	}
+	
+	public String seeTemporaryOrder() {
+		StringBuilder order = new StringBuilder();
+		int currentPrice = 0;
+		if(this.products.size()>0) {
+			for(Entry<Product,Integer> entry:products.entrySet()) {
+				order.append(entry.getKey()+" X "+ entry.getValue()+"\n");
+				currentPrice+=(entry.getKey().getPrice()*entry.getValue());
+			}
+			order.append("Current Price: " + currentPrice);
+			return order.toString();
+		}
+		return "The bucket is empty!";
+	}
+	
 	public String getAddress() {
 		return address;
 	}
+	
 	public void setAddress(String address) {
 		this.address = address;
 	}
@@ -129,6 +145,7 @@ public class Order {
 	public void setFinalized(boolean isFinalized) {
 		this.isFinalized = isFinalized;
 	}
+	
 	/*public String pastOrdersView() {
 		return this.time+"  "+this.price;
 	}*/

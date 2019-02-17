@@ -13,10 +13,13 @@ import com.thoughtworks.xstream.XStream;
 
 import exceptions.EmailAlreadyExistException;
 import exceptions.InvalidAddress;
+import exceptions.InvalidDataExcecption;
 import exceptions.InvalidEMailException;
 import exceptions.WrongPasswordException;
 
 public class UserStorage {
+	private static final String PHONE_NUMBER_START_PREFIX = "08";
+	private static final int PHONE_NUMBER_LENGTH = 10;
 	private static final int MIN_PASSWORD_LENGHT = 6;
 	private static int usersCount = 0;
 	private Map<String, User> users;
@@ -24,7 +27,6 @@ public class UserStorage {
 	
 	private UserStorage() {
 		this.users = new HashMap<String,User>();
-		//this.downloadDataFromFile();
 	}
 	
 	public static UserStorage getUserStorage() {
@@ -34,19 +36,21 @@ public class UserStorage {
 		return userStorage;
 	}
 	
-	public void addNewUser(String name, String phoneNumber, String email, String password) throws EmailAlreadyExistException {
+	public void addNewUser(String name, String phoneNumber, String email, String password) throws EmailAlreadyExistException, InvalidDataExcecption {
 		if(UserStorage.usersCount==0) {
 			this.users = new HashMap<String, User>();
 		}
 		
 		if(!this.users.containsKey(email)) {
-			if(isValidEmailAndPassword(email, password)) {
+			if(isValidEmailAndPasswordAndPhone(email, password, phoneNumber)) {
 				User newUser = new User(name, phoneNumber, email, password);
 				this.users.put(email, newUser);
 				UserStorage.usersCount++;
 				System.out.println("You registered successfully!\n");
 				//Users.addUser(newUser);
 				
+			} else {
+				throw new InvalidDataExcecption("Invalid phone number or password field!");
 			}
 		} else {
 			throw new EmailAlreadyExistException("This e-mail is already taken!");
@@ -90,8 +94,12 @@ public class UserStorage {
 		} else throw new InvalidEMailException("E-Mail was not found!");
 	}
 
-	private boolean isValidEmailAndPassword(String email, String password) {
-		return email!=null && email.trim().length()>0 && password!=null && password.trim().length()>=MIN_PASSWORD_LENGHT;
+	private boolean isValidEmailAndPasswordAndPhone(String email, String password, String phoneNumber) {
+		return email!=null && email.trim().length()>0 
+						&& password!=null 
+						&& password.trim().length()>=MIN_PASSWORD_LENGHT 
+						&& phoneNumber.trim().length() == PHONE_NUMBER_LENGTH
+						&& phoneNumber.trim().startsWith(PHONE_NUMBER_START_PREFIX);
 	}
 
 	public Map<String, User> getUsers() {

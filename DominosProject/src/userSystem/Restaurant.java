@@ -15,10 +15,12 @@ public class Restaurant {
 	
 	
 	private Restaurant() {
-		this.deliveryGuys = new HashSet<DeliveryGuy>();
-		this.cookers = new HashSet<Cooker>();
+		this.deliveryGuys = EmployeeStorage.getemployeeStorage().getDeliveryGuys();
+		this.cookers = EmployeeStorage.getemployeeStorage().getCookers();
 		this.receivedOrders = new LinkedBlockingQueue<Order>();
 		this.preparedOrders = new LinkedBlockingQueue<Order>();
+		this.cookers.forEach(cooker -> new Thread(cooker).start());
+		this.deliveryGuys.forEach(deliveryGuy -> new Thread(deliveryGuy).start());
 	}
 	
 	public static Restaurant getRestaurant() {
@@ -47,17 +49,5 @@ public class Restaurant {
 	
 	public Order getPreparedOrder() throws InterruptedException {
 		return this.preparedOrders.take();
-	}
-	
-	public void addDeliveryGuy(DeliveryGuy deliveryGuy) throws InvalidPersonException {
-		if(deliveryGuy != null) {
-			this.deliveryGuys.add(deliveryGuy);
-		} else throw new InvalidPersonException("Invalid Delivery Guy!");
-	}
-	
-	public void addCooker(Cooker cooker) throws InvalidPersonException {
-		if(cooker != null) {
-			this.cookers.add(cooker);
-		} else throw new InvalidPersonException("Invalid Cooker!");
 	}
 }

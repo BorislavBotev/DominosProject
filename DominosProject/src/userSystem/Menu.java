@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.Set;
 import exceptions.EmailAlreadyExistException;
 import exceptions.InvalidChoiceException;
+import exceptions.InvalidDataExcecption;
 import exceptions.InvalidEMailException;
 import exceptions.InvalidPriceException;
 import exceptions.InvalidProductException;
@@ -86,7 +87,8 @@ public class Menu{
 			try {
 				Order order = new Order(user);
 				while(!order.isFinalized()) {
-					System.out.println("1 - Add Product\n2 - Remove Product\n3 - Finalize Order");
+					System.out.println("1 - Add Product\n2 - Remove Product\n"
+							+ "3 - See temporary order\n4 - Finalize Order");
 					byte choice = sc.nextByte();
 					
 					switch (choice) {
@@ -99,6 +101,10 @@ public class Menu{
 						break;
 					}
 					case 3:{
+						System.out.println(order.seeTemporaryOrder());
+						break;
+					}
+					case 4:{
 						chooseAddress(user, order);
 						chooseDeliveryTime(order);
 						order.calculatePrice();
@@ -145,6 +151,7 @@ public class Menu{
 			List<Product> products = new ArrayList<Product>(menu);
 			for(int index=0; index < products.size(); index++) {
 				System.out.println((index+1) + " - " + products.get(index));
+			}
 				int choice = sc.nextShort() - 1 ;
 				if(isValidChoice(products, (short)choice)) {
 					Product choosenProduct = products.get(choice);
@@ -154,7 +161,7 @@ public class Menu{
 						e.printStackTrace();
 					}
 				}
-			}
+			
 		}
 	}
 
@@ -228,23 +235,25 @@ public class Menu{
 		int index=0;
 		do {
 			System.out.println("Please choose the size of the pizza");
-			index=0;
+			index=1;
 			for(Pizza.Size s:Pizza.Size.values()) {
 				System.out.println(index++ +"- "+s);
 			}
-			index=sc.nextInt();
-			pizza.setSize(Size.values()[index]);
-		} while(index<1 || index>=Pizza.Size.values().length);
+
+
+			index = sc.nextInt();
+			pizza.setSize(Size.values()[index-1]);
+		} while(index<0 || index>=Pizza.Size.values().length);
 		
 		do {
-			index=0;
+			index=1;
 			System.out.println("Please choose your dough");
 			for(Pizza.Dough d:Pizza.Dough.values()) {
 				System.out.println(index++ +"- "+d);
 			}
 			index=sc.nextInt();
-			pizza.setDough(Dough.values()[index]);
-		} while(index<1 || index>=Pizza.Dough.values().length);
+			pizza.setDough(Dough.values()[index-1]);
+		} while(index<0 || index>=Pizza.Dough.values().length);
 		
 		return pizza;
 	}
@@ -365,7 +374,7 @@ public class Menu{
 		
 		try {
 			UserStorage.getUserStorage().addNewUser(name, phoneNumber, eMail, password);
-		} catch (EmailAlreadyExistException e) {
+		} catch (EmailAlreadyExistException | InvalidDataExcecption e) {
 			e.printStackTrace();
 		}
 	}
