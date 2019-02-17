@@ -1,0 +1,10 @@
+﻿<users>
+	<user eMail = "gosho@gmail.com">
+		<name>gosho</name>
+		<password>123456</password>
+		<phoneNumber>0893773288</phoneNumber>
+		<adresses>
+			<adress>"Sofia"</adress>
+		</adresses>
+	</user>
+</users>

@@ -52,5 +52,7 @@ public abstract class Product {
 		return "Category: " + this.productCategory + " - " + this.name + " - " + this.price;
 	}
 	
-	
+	public String getName() {
+		return name;
+	}
 }

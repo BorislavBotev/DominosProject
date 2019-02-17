@@ -10,6 +10,8 @@ public abstract class Person {
 	private String name;
 	private String phoneNumber;
 	
+	protected Person() {};
+	
 	protected Person(String name, String phoneNumber) {
 		try {
 			this.setName(name);
@@ -42,7 +44,12 @@ public abstract class Person {
 	private boolean isValidName(String name) {
 		return name!=null && name.trim().length()>0;
 	}
+	
 	public String getName() {
 		return name;
+	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 }

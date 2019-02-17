@@ -1,11 +1,19 @@
 package userSystem;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -15,6 +23,7 @@ import exceptions.InvalidDataExcecption;
 import exceptions.InvalidEMailException;
 import exceptions.WrongPasswordException;
 
+@XmlRootElement(name = "users")
 public class UserStorage {
 	private static final String PHONE_NUMBER_START_PREFIX = "08";
 	private static final int PHONE_NUMBER_LENGTH = 10;
@@ -25,7 +34,6 @@ public class UserStorage {
 	
 	private UserStorage() {
 		this.users = new HashMap<String,User>();
-//		this.downloadDataFromFile();
 	}
 	
 	public static UserStorage getUserStorage() {
@@ -46,6 +54,7 @@ public class UserStorage {
 				this.users.put(email, newUser);
 				UserStorage.usersCount++;
 				System.out.println("You registered successfully!\n");
+				//Users.addUser(newUser);
 				
 			} else {
 				throw new InvalidDataExcecption("Invalid phone number or password field!");
@@ -61,11 +70,31 @@ public class UserStorage {
 		xs.alias("address", String.class);
 		xs.alias("Order", Order.class);
 		xs.processAnnotations( Users.class);
+		File f=new File("data_base"+File.separator+"Users.xml");
+		byte b=0;
+		try {
+			b=(byte)(new FileInputStream(f).read());
+		} catch (FileNotFoundException e) {
+			return;
+		} catch (IOException e) {
+			return;
+		}
+		System.out.println(b);
+		if(b==-1) {
+			return;
+		}
 		Users is=(Users)(xs.fromXML(new File("data_base"+File.separator+"Users.xml")));
 		for(User u:is.getUsers()) {
 			users.put(u.getName(), u);
 		}
 	}
+	
+//	private void downloadDataFromFile2() throws JAXBException{
+//		JAXBContext jc = JAXBContext.newInstance(UserStorage.class);
+//		 
+//		  Unmarshaller unmarshaller = jc.createUnmarshaller();
+//		  UserStorage unMarshCustomer = (UserStorage) unmarshaller.unmarshal(new File("data_base" + File.separator + "users2.xml"));
+//	}
 	
 	public User login(String eMail, String password) throws InvalidEMailException, WrongPasswordException {
 		if(this.users.containsKey(eMail)) {
@@ -87,9 +116,8 @@ public class UserStorage {
 						&& phoneNumber.trim().startsWith(PHONE_NUMBER_START_PREFIX);
 	}
 
+	@XmlJavaTypeAdapter(MapAdapter.class)
 	public Map<String, User> getUsers() {
 		return users;
 	}
-	
-	
 }

@@ -158,4 +158,61 @@
 			</ingredients>
 		</pizza>
 	</pizzas>
+	<drinks>
+		<drink>
+			<name>Coca Cola</name>
+			<price>2</price>
+			<photo></photo>
+			<productCategory>DRINK</productCategory>
+			<liter>HALF_A_LITER</liter>
+		</drink>
+		<drink>
+			<name>Fanta</name>
+			<price>1.5</price>
+			<photo></photo>
+			<productCategory>DRINK</productCategory>
+			<liter>LITER_AND_25</liter>
+		</drink>
+		<drink>
+			<name>Beer</name>
+			<price>3</price>
+			<photo></photo>
+			<productCategory>DRINK</productCategory>
+			<liter>TWO_LITERS</liter>
+		</drink>
+	</drinks>
+	<sauces>
+		<sauce>
+			<name>Chesnov</name>
+			<price>1</price>
+			<photo></photo>
+			<productCategory>SAUCE</productCategory>
+		</sauce>
+		<sauce>
+			<name>Lutiv</name>
+			<price>1.5</price>
+			<photo></photo>
+			<productCategory>SAUCE</productCategory>
+		</sauce>
+		<sauce>
+			<name>Barbeku</name>
+			<price>2</price>
+			<photo></photo>
+			<productCategory>SAUCE</productCategory>
+		</sauce>
+	</sauces>
+	<desserts>
+		<dessert>
+		<name>Ice Cream</name>
+		<price>3</price>
+		<photo></photo>
+		<productCategory>DESSERT</productCategory>
+		</dessert>
+		<dessert>
+		<name>PanCakes</name>
+		<price>3.5</price>
+		<photo></photo>
+		<productCategory>DESSERT</productCategory>
+		</dessert>
+	</desserts>
 </products>

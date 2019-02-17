@@ -32,14 +32,19 @@ public class Pizza extends Product {
 	
 	public static class HalfHalfPizza extends Pizza {
 		private Pizza secondHalfPizza;
+		
 		public HalfHalfPizza(String name, double price) throws InvalidProductException, InvalidPriceException {
 			super(name, price);	
-			this.setPrice();
 		}
 		
 		public void chooseSecondHalfPizza(Pizza pizza) throws InvalidProductException {
 			if(pizza!=null) {
 				this.secondHalfPizza = pizza;
+				try {
+					this.setPrice((this.getPrice() + this.secondHalfPizza.getPrice()) / 2);
+				} catch (InvalidPriceException e) {
+					e.getMessage();
+				}
 			} else {
 				throw new InvalidProductException("Invalid Product");
 			}
@@ -57,12 +62,10 @@ public class Pizza extends Product {
 			this.secondHalfPizza.size=size;
 		}
 		
-		private void setPrice() {
-			try {
-				super.setPrice((this.getPrice()/2) + (this.secondHalfPizza.getPrice()/2));
-			} catch (InvalidPriceException e) {
-				e.printStackTrace();
-			}
+		@Override
+		public String toString() {
+			return this.getName() + "/" + this.secondHalfPizza.getName() + " - Size: " + this.secondHalfPizza.getSize()
+			+ " - Dough: " + this.getDough();
 		}
 	}
 	
@@ -71,16 +74,13 @@ public class Pizza extends Product {
 	private Set<Ingredient> ingredients = new HashSet<Ingredient>();
 	
 	public Pizza(String name,double price) throws InvalidProductException, InvalidPriceException {
-		//po dobre da mahnem cenata ot constructora
 		super(name, 0,ProductCategory.PIZZA);
 		this.size=Size.LARGE;
-		//this.setPrice(this.getPrice()+this.size.getPrice());
 	}
 
 	public Pizza(String name,Size size) throws InvalidProductException, InvalidPriceException {
 		super(name, 0,ProductCategory.PIZZA);
 		this.size=size;
-		//this.setPrice(this.getPrice()+this.size.getPrice());
 	}
 	
 	public Pizza(String name, double price, Set<Ingredient> ingredients) throws InvalidProductException, InvalidPriceException {
@@ -101,13 +101,6 @@ public class Pizza extends Product {
 	}
 	
 	
-//	public void addIngredients(Set<Ingredient> ingredients) {
-//		if(ingredients!=null) {
-//			for(Ingredient i:ingredients) {
-//				this.addIngredient(i);
-//			}
-//		}
-//	}
 	public void addIngredient(Ingredient ingredient){
 		if(ingredient!=null) {
 			ingredients.add(ingredient);
@@ -118,8 +111,12 @@ public class Pizza extends Product {
 		ingredients.remove(ingredient);
 	}
 
-	public void setSize(Size size) {
-		this.size = size;
+	public Size getSize() {
+		return size;
+	}
+	
+	public Dough getDough() {
+		return dough;
 	}
 
 	@Override
@@ -130,6 +127,4 @@ public class Pizza extends Product {
 	public void setDough(Dough dough) {
 		this.dough = dough;
 	}
-	
-	
 }

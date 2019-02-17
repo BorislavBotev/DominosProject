@@ -1,18 +1,17 @@
 package userSystem;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import exceptions.InvalidAddress;
 import exceptions.InvalidOrderException;
 
 @XStreamAlias("user")
+@XmlRootElement(name = "user")
 public class User extends Person implements IUser{
 	
 	private String eMail;
@@ -20,6 +19,8 @@ public class User extends Person implements IUser{
 	//private Set<Order> pastOrders;
 	@XStreamAlias("addresses")
 	private List<String> addresses;
+	
+	private User() {}
 	
 	public User(String name, String phoneNumber, String email, String password) {
 		super(name, phoneNumber);
@@ -45,11 +46,18 @@ public class User extends Person implements IUser{
 		}
 		this.addresses.add(address);
 	}
+	
+	@XmlAttribute(name = "eMail")
+	public String geteMail() {
+		return eMail;
+	}
 
+	@XmlElement(name = "adresses")
 	public List<String> getAddresses() {
 		return Collections.unmodifiableList(addresses);
 	}
 
+	@XmlElement(name = "password")
 	public String getPassword() {
 		return password;
 	}
@@ -59,6 +67,13 @@ public class User extends Person implements IUser{
 		return "User [eMail=" + eMail + ", password=" + password + ", addresses=" + addresses + "]";
 	}
 
+	@Override @XmlElement(name = "name")
+	public String getName() {
+		return super.getName();
+	}
 
-	
+	@Override @XmlElement(name = "phoneNumber")
+	public String getPhoneNumber() {
+		return super.getPhoneNumber();
+	}
 }

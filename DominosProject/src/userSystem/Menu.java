@@ -27,7 +27,7 @@ public class Menu{
 	private static final int MIN_MINUTES = 0;
 	private static final int MAX_HOURS = 23;
 	private static final int MIN_HOURS = 0;
-	private static final int STARTING_INDEX = 1;
+	private static final int STARTING_INDEX = 0;
 	private static Scanner sc = new Scanner(System.in);
 	private static Menu menu = null;
 	
@@ -149,20 +149,21 @@ public class Menu{
 			showPizzaOrderMenu(order);
 		} else {			
 			List<Product> products = new ArrayList<Product>(menu);
-				for(short index=0; index < products.size(); index++) {
-					System.out.println((index+1) + " - " + products.get(index));
-				}
-			short choice = (short) (sc.nextShort() - 1) ;
-			if(isValidChoice(products, choice)) {
+			for(int index=0; index < products.size(); index++) {
+				System.out.println((index+1) + " - " + products.get(index));
+			}
+			int choice = sc.nextShort() - 1 ;
+			if(isValidChoice(products, (short)choice)) {
 				Product choosenProduct = products.get(choice);
-					try {
-						order.addProduct(choosenProduct);
-					} catch (InvalidProductException e) {
-						e.printStackTrace();
-					}
+				try {
+					order.addProduct(choosenProduct);
+				} catch (InvalidProductException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
+
 
 
 	private void showPizzaOrderMenu(Order order) {
@@ -208,6 +209,7 @@ public class Menu{
 		for(short index=0; index<pizzaMenu.size(); index++) {
 			System.out.println((index+1) + " - " + pizzaMenu.get(index));
 		}
+		System.out.println("Choose pizza");
 		short choice = (short) (sc.nextShort() - 1);
 		if(isValidChoice(pizzaMenu, choice)) {
 			Pizza pizza = (Pizza) pizzaMenu.get(choice);
@@ -219,10 +221,13 @@ public class Menu{
 	
 	private Pizza orderHalfHalfPizza() throws InvalidChoiceException {
 		try {
-			Pizza.HalfHalfPizza pizza = (HalfHalfPizza) orderPizzaFromMenu();
-			pizza.chooseSecondHalfPizza((HalfHalfPizza) orderPizzaFromMenu());
+			Pizza p = orderPizzaFromMenu();
+			System.out.println("Choose first half!");
+			Pizza.HalfHalfPizza pizza = new Pizza.HalfHalfPizza(p.getName(), p.getPrice());
+			System.out.println("Choose second half!");
+			pizza.chooseSecondHalfPizza(orderPizzaFromMenu());
 			return pizza;
-		} catch (InvalidChoiceException | InvalidProductException e) {
+		} catch (InvalidChoiceException | InvalidProductException | InvalidPriceException e) {
 			e.printStackTrace();
 		}
 		throw new InvalidChoiceException("Invalid command!");
@@ -237,9 +242,11 @@ public class Menu{
 			for(Pizza.Size s:Pizza.Size.values()) {
 				System.out.println(index++ +"- "+s);
 			}
+
+
 			index = sc.nextInt();
-			pizza.setSize(Size.values()[index-1]);
-		} while(index<0 || index>=Pizza.Size.values().length);
+			pizza.chooseSize(Size.values()[index-1]);
+		} while(index<0 || index>Pizza.Size.values().length);
 		
 		do {
 			index=1;
@@ -249,7 +256,7 @@ public class Menu{
 			}
 			index=sc.nextInt();
 			pizza.setDough(Dough.values()[index-1]);
-		} while(index<0 || index>=Pizza.Dough.values().length);
+		} while(index<0 || index>Pizza.Dough.values().length);
 		
 		return pizza;
 	}
@@ -258,8 +265,9 @@ public class Menu{
 	private void chooseDeliveryTime(Order order) {
 		int hours,minutes;
 		do {
-		System.out.println("Please insert hours and minutes");
+		System.out.println("Please insert hours");
 			 hours=sc.nextInt();
+				System.out.println("Please insert minutes");
 			 minutes=sc.nextInt();
 		}
 		while(hours<MIN_HOURS || hours>MAX_HOURS || minutes<MIN_MINUTES || minutes>MAX_MINUTES);	
@@ -282,15 +290,16 @@ public class Menu{
 				System.out.println("You got no addresses added");
 				Menu.getMenu().insertAddress(user);
 			}
-			int displayIndex=STARTING_INDEX;
+			
 			int chooseIndex;
 			do {
+				int displayIndex=STARTING_INDEX;
 				System.out.println("Please choose an address");
 				for(String s:user.getAddresses()) {
 					System.out.println("Address "+displayIndex++ +"- "+s);
 				}
 				chooseIndex=sc.nextInt();
-			}while(chooseIndex<1 || chooseIndex>user.getAddresses().size());
+			}while(chooseIndex<0 || chooseIndex>user.getAddresses().size());
 			order.setAddress(user.getAddresses().get(chooseIndex));
 			break;
 		default:
@@ -300,6 +309,7 @@ public class Menu{
 
 	private void insertAddress(User user) throws InvalidAddress {
 		System.out.println("Please insert an address");
+		sc.nextLine();
 		user.addAddress(sc.nextLine());
 	}
 	
