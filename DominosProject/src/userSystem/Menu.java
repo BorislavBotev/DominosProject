@@ -149,17 +149,17 @@ public class Menu{
 			showPizzaOrderMenu(order);
 		} else {			
 			List<Product> products = new ArrayList<Product>(menu);
-			for(short index=0; index < products.size(); index++) {
-				System.out.println((index+1) + " - " + products.get(index));
-				short choice = (short) (sc.nextShort() - 1) ;
-				if(isValidChoice(products, choice)) {
-					Product choosenProduct = products.get(choice);
+				for(short index=0; index < products.size(); index++) {
+					System.out.println((index+1) + " - " + products.get(index));
+				}
+			short choice = (short) (sc.nextShort() - 1) ;
+			if(isValidChoice(products, choice)) {
+				Product choosenProduct = products.get(choice);
 					try {
 						order.addProduct(choosenProduct);
 					} catch (InvalidProductException e) {
 						e.printStackTrace();
 					}
-				}
 			}
 		}
 	}
