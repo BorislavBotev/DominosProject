@@ -54,7 +54,7 @@ public class Order {
 	}
 	
 	public void insertDate(LocalTime time) throws InvalidTimeException {
-		if(time.isBefore(this.time) || time.isAfter(LocalTime.of(00, 00))){
+		if(time.isBefore(this.time) || time.isAfter(LocalTime.of(23, 59))){
 			throw new InvalidTimeException("Invalid time");
 		}
 		this.time=time;		

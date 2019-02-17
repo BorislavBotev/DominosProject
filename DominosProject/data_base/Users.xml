@@ -1,0 +1,9 @@
+<list>
+  <userSystem.User>
+    <name>name</name>
+    <phoneNumber>0888975865</phoneNumber>
+    <eMail>abv</eMail>
+    <password>1123456</password>
+    <addresses/>
+  </userSystem.User>
+</list>

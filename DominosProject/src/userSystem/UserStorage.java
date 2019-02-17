@@ -1,7 +1,9 @@
 package userSystem;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +24,7 @@ public class UserStorage {
 	
 	private UserStorage() {
 		this.users = new HashMap<String,User>();
-		this.downloadDataFromFile();
+		//this.downloadDataFromFile();
 	}
 	
 	public static UserStorage getUserStorage() {
@@ -43,6 +45,7 @@ public class UserStorage {
 				this.users.put(email, newUser);
 				UserStorage.usersCount++;
 				System.out.println("You registered successfully!\n");
+				//Users.addUser(newUser);
 				
 			}
 		} else {
@@ -56,6 +59,19 @@ public class UserStorage {
 		xs.alias("address", String.class);
 		xs.alias("Order", Order.class);
 		xs.processAnnotations( Users.class);
+		File f=new File("data_base"+File.separator+"Users.xml");
+		byte b=0;
+		try {
+			b=(byte)(new FileInputStream(f).read());
+		} catch (FileNotFoundException e) {
+			return;
+		} catch (IOException e) {
+			return;
+		}
+		System.out.println(b);
+		if(b==-1) {
+			return;
+		}
 		Users is=(Users)(xs.fromXML(new File("data_base"+File.separator+"Users.xml")));
 		for(User u:is.getUsers()) {
 			users.put(u.getName(), u);
