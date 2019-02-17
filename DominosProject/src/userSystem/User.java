@@ -18,7 +18,7 @@ public class User extends Person implements IUser{
 	private List<String> addresses;
 	//discountTickets..
 	
-	protected User(String name, String phoneNumber, String email, String password) {
+	public User(String name, String phoneNumber, String email, String password) {
 		super(name, phoneNumber);
 		this.eMail = email;
 		this.password = password;

@@ -101,8 +101,9 @@ public class Menu{
 					case 3:{
 						chooseAddress(user, order);
 						chooseDeliveryTime(order);
-						user.makeOrder(order);
+						order.calculatePrice();
 						order.setFinalized(true);
+						user.makeOrder(order);
 						break;
 					}
 					default:

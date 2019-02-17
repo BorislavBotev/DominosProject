@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 
 import exceptions.InvalidChoiceException;
+import exceptions.InvalidPersonException;
 import exceptions.InvalidProductException;
 import exceptions.InvalidTimeException;
 import exceptions.InvalidUserException;
@@ -18,7 +19,7 @@ public class Order {
 	private static final int INITIAL_QUANTITY = 1;
 	private User client;
 	private Map<Product,Integer> products;
-	private double price;
+	private float price;
 	private DeliveryGuy deliveryGuy;
 	private LocalTime time;
 	private boolean isFinalized;
@@ -56,10 +57,15 @@ public class Order {
 		this.time=time;		
 	}
 	
-	public void addDeliveryGuy(DeliveryGuy deliveryGy) {
-		
+	public void addDeliveryGuy(DeliveryGuy deliveryGuy) throws InvalidPersonException {
+		if(deliveryGuy!=null) {
+			this.deliveryGuy = deliveryGuy;
+		} else throw new InvalidPersonException("Invalid Delivery guy!");
 	}
 	
+	public void calculatePrice() {
+		this.products.forEach((product, quantity) -> this.price += (product.getPrice()*quantity));
+	}
 	
 	public void removeProduct() throws InvalidChoiceException {
 		if(this.products.size()==0) {
@@ -99,9 +105,10 @@ public class Order {
 		for(Entry<Product,Integer> entry:products.entrySet()) {
 			order.append(entry.getValue()+" X "+ entry.getValue()+"\n");
 		}
+		order.append("Total price: " + this.price + "\n");
 		order.append("Your delivery guy "+deliveryGuy.getName()+"\n");
 		order.append("Your order is set for "+time+"\n");
-		order.append("Address delivery" + this.address);
+		order.append("Address delivery " + this.address);
 		return order.toString();
 		
 	}
