@@ -3,10 +3,13 @@ package userSystem;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import exceptions.InvalidPriceException;
 import exceptions.InvalidProductException;
-
+@XStreamAlias("pizza")
 public class Pizza extends Product {
+	@XStreamAlias("size")
 	public enum Size {
 		MEDIUM(6,5),LARGE(8,6.5),DJUMBO(12,7.5);
 		private int numberOfPieces;
@@ -22,7 +25,7 @@ public class Pizza extends Product {
 		}
 		
 	}
-	
+	@XStreamAlias("dough")
 	public enum Dough{
 		ITALIAN,SLIGHTY,STANDART;
 	}
@@ -117,6 +120,11 @@ public class Pizza extends Product {
 
 	public void setSize(Size size) {
 		this.size = size;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString()+ " size=" + size + ", dough=" + dough + ", ingredients=" + ingredients + "]";
 	}
 
 	public void setDough(Dough dough) {

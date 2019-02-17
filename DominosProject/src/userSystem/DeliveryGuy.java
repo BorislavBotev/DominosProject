@@ -3,9 +3,10 @@ package userSystem;
 import exceptions.InvalidPersonException;
 
 public class DeliveryGuy extends Person implements Runnable{
+
 	private static final int DELIVERY_TIME = 3000;
 
-	public DeliveryGuy(String name, String phoneNumber) {
+	protected DeliveryGuy(String name, String phoneNumber) {
 		super(name, phoneNumber);
 	}
 

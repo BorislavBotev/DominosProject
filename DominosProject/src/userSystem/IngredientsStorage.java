@@ -1,5 +1,6 @@
 package userSystem;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,16 +9,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+
+import com.thoughtworks.xstream.XStream;
+
 import exceptions.InvalidIngredientException;
+import userSystem.Ingredient.IngredientsCategory;
+
 import java.util.TreeMap;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class IngredientsStorage {
+
+
 	private static IngredientsStorage ingredientsStorage = null;
 	private Map<Ingredient.IngredientsCategory,Set<Ingredient>> storage;
 	
 	private IngredientsStorage() {
 		this.storage = new TreeMap<>();
+		this.downloadDataFromBase();
 	}
+	private void downloadDataFromBase() {
+		XStream xs=new XStream();
+		xs.allowTypesByRegExp(new String[] { ".*" });
+		xs.processAnnotations( Ingredients.class);
+		Ingredients is=(Ingredients)(xs.fromXML(new File("data_base"+File.separator+"Ingredients.xml")));
+		storage=is.getIngredients().stream().collect(Collectors.groupingBy(Ingredient::getCategory,Collectors.toSet()));
+	}
+	
 	
 	public static IngredientsStorage getIngredientsStorage() {
 		if(IngredientsStorage.ingredientsStorage == null) {

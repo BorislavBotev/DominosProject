@@ -5,8 +5,8 @@ import exceptions.InvalidOrderException;
 public class Cooker extends Person implements Runnable {
 
 	private static final int PREPARE_TIME = 3000;
-
-	public Cooker(String name, String phoneNumber) {
+	
+	protected Cooker(String name, String phoneNumber) {
 		super(name, phoneNumber);
 	}
 

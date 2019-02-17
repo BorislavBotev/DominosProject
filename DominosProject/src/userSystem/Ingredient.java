@@ -1,9 +1,14 @@
 package userSystem;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAliasType;
+
 import exceptions.InvalidNameException;
 import exceptions.InvalidPriceException;
-
+@XStreamAlias("ingredient")
 public class Ingredient {
+	
+	@XStreamAlias("category")
 	public enum IngredientsCategory {
 		VEGETABLE,MEAT,SAUCE,CHEESE;
 	}
@@ -35,6 +40,10 @@ public class Ingredient {
 		return price;
 	}
 	
+	@Override
+	public String toString() {
+		return "Ingredient [name=" + name + ", category=" + category + ", price=" + price + "]";
+	}
 	
 	
 	

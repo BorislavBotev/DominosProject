@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import java.util.Scanner;
 
 import exceptions.InvalidChoiceException;
@@ -13,7 +16,7 @@ import exceptions.InvalidPersonException;
 import exceptions.InvalidProductException;
 import exceptions.InvalidTimeException;
 import exceptions.InvalidUserException;
-
+@XStreamAlias("order")
 public class Order {
 	private static final int APPROXIMATE_WAITING_TIME = 60;
 	private static final int INITIAL_QUANTITY = 1;
@@ -126,5 +129,8 @@ public class Order {
 	public void setFinalized(boolean isFinalized) {
 		this.isFinalized = isFinalized;
 	}
+	/*public String pastOrdersView() {
+		return this.time+"  "+this.price;
+	}*/
 
 }
